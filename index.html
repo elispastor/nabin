@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nabin - Sistema de Inventario</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --amarillo-nabin: #ffcc00;
+            --negro-nabin: #111111;
+            --gris-oscuro: #222222;
+            --blanco: #ffffff;
+            --rojo-alerta: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            color: var(--negro-nabin);
+        }
+
+        /* =========================================
+           ENCABEZADO (HEADER)
+           ========================================= */
+        header {
+            background-color: var(--negro-nabin);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 4px solid var(--amarillo-nabin);
+        }
+
+        .logo-text {
+            color: var(--amarillo-nabin);
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background-color: var(--amarillo-nabin);
+            border-radius: 3px;
+            transition: 0.3s;
+        }
+
+        .nav-menu {
+            display: none;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            background-color: var(--negro-nabin);
+            flex-direction: column;
+            padding: 20px;
+            border-bottom: 4px solid var(--amarillo-nabin);
+        }
+
+        .nav-menu.active {
+            display: flex;
+        }
+
+        .nav-menu a {
+            color: var(--blanco);
+            text-decoration: none;
+            padding: 12px 0;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* =========================================
+           PORTADA
+           ========================================= */
+        .portada-container {
+            width: 100%;
+            background-color: var(--negro-nabin);
+            display: flex;
+            justify-content: center;
+        }
+
+        .portada-container img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* =========================================
+           PANEL DE CONTROL
+           ========================================= */
+        .main-container {
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .panel-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .panel-title h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2rem;
+            color: var(--negro-nabin);
+            text-transform: uppercase;
+        }
+        
+        .panel-title p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* =========================================
+           TARJETAS DE PRODUCTOS
+           ========================================= */
+        .productos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .producto-card {
+            background: var(--blanco);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--amarillo-nabin);
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Alerta de Stock Bajo */
+        .producto-card.alerta {
+            border-left: 6px solid var(--rojo-alerta);
+            background-color: #fff5f5;
+        }
+
+        .producto-nombre {
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: var(--negro-nabin);
+        }
+
+        .producto-ref {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stock-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .stock-numero {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--negro-nabin);
+            width: 60px;
+            text-align: center;
+        }
+
+        .producto-card.alerta .stock-numero {
+            color: var(--rojo-alerta);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-control {
+            background: var(--negro-nabin);
+            color: var(--amarillo-nabin);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .btn-control:hover {
+            background: var(--amarillo-nabin);
+            color: var(--negro-nabin);
+        }
+
+        .alerta-texto {
+            display: none;
+            color: var(--rojo-alerta);
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .producto-card.alerta .alerta-texto {
+            display: block;
+        }
+
+        /* =========================================
+           FOOTER
+           ========================================= */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            background: var(--negro-nabin);
+            color: var(--blanco);
+            margin-top: 40px;
+        }
+
+        footer p {
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+
+        footer a {
+            color: var(--amarillo-nabin);
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ENCABEZADO -->
+    <header>
+        <div class="logo-text">NABIN</div>
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <nav class="nav-menu" id="navMenu">
+            <a href="#">📦 Inventario</a>
+            <a href="#">📊 Reportes (Próximamente)</a>
+            <a href="#">⚙️ Configuración</a>
+        </nav>
+    </header>
+
+    <!-- PORTADA (Banner de Nabin) -->
+    <div class="portada-container">
+        <!-- Pon el nombre exacto de la primera imagen que me enviaste -->
+        <img src="portada-nabin.jpg" alt="Productos de Limpieza Nabin" onerror="this.src='https://via.placeholder.com/1200x300/111111/ffcc00?text=portada-nabin.jpg'">
+    </div>
+
+    <!-- PANEL DE INVENTARIO -->
+    <main class="main-container">
+        <div class="panel-title">
+            <h1>Control de Existencias</h1>
+            <p>Los datos se guardan automáticamente en este dispositivo.</p>
+        </div>
+
+        <div class="productos-grid" id="gridProductos">
+            <!-- El JavaScript llenará esto automáticamente -->
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>Sistema de Inventario NABIN</p>
+        <a href="https://guia-digital.com/productos-de-limpieza-nabin">guia-digital.com/productos-de-limpieza-nabin</a>
+    </footer>
+
+    <!-- =========================================
+         JAVASCRIPT (LÓGICA DE INVENTARIO)
+         ========================================= -->
+    <script>
+        // 1. Menú Hamburguesa
+        function toggleMenu() {
+            document.getElementById('navMenu').classList.toggle('active');
+        }
+
+        // 2. Definir los productos (basados en tu lista)
+        const productosDefecto = [
+            { id: "p1", nombre: "Jabón Líquido", ref: "Ref. 1", stock: 0 },
+            { id: "p2", nombre: "Desinfectantes", ref: "Ref. 2", stock: 0 },
+            { id: "p3", nombre: "Desinfectante Canela", ref: "Ref. 3", stock: 0 },
+            { id: "p4", nombre: "Cloro", ref: "Ref. 4", stock: 0 },
+            { id: "p5", nombre: "Cloro Jabonoso Suavizante", ref: "Ref. 5", stock: 0 },
+            { id: "p6", nombre: "Blanqueador", ref: "Ref. 6", stock: 0 },
+            { id: "p7", nombre: "Vinagre de Limpieza", ref: "Ref. 7", stock: 0 },
+            { id: "p8", nombre: "Cera Blanca y Roja", ref: "Ref. 8", stock: 0 },
+            { id: "p9", nombre: "Veneno de Hormigas y Polillas", ref: "Ref. 9", stock: 0 },
+            { id: "p10", nombre: "Creolina", ref: "Ref. 10", stock: 0 },
+            { id: "p11", nombre: "Destapa Cañería", ref: "Ref. 11", stock: 0 },
+            { id: "p12", nombre: "Limpia Cerámica", ref: "Ref. 12", stock: 0 },
+            { id: "p13", nombre: "Crema Mentolada", ref: "Ref. 13", stock: 0 },
+            { id: "p14", nombre: "Suavizante de Ropa", ref: "Ref. 14", stock: 0 },
+            { id: "p15", nombre: "Champú para Carro", ref: "Ref. 15", stock: 0 },
+            { id: "p16", nombre: "Envase 4 Litros", ref: "Ref. 16", stock: 0 },
+            { id: "p17", nombre: "Champú para Mascota", ref: "Ref. 17", stock: 0 },
+            { id: "p18", nombre: "Abrillantador", ref: "Ref. 18", stock: 0 },
+            { id: "p19", nombre: "Esponja", ref: "Ref. 19", stock: 0 },
+            { id: "p20", nombre: "Brillo", ref: "Ref. 20", stock: 0 },
+            { id: "p21", nombre: "Bolsa", ref: "Ref. 21", stock: 0 }
+        ];
+
+        // 3. Límite para la alerta roja
+        const LIMITE_STOCK_BAJO = 5;
+
+        // 4. Cargar datos del LocalStorage o usar los de defecto
+        let inventario = JSON.parse(localStorage.getItem('inventarioNabin'));
+        
+        if (!inventario || inventario.length === 0) {
+            inventario = productosDefecto;
+            guardarEnMemoria();
+        }
+
+        // 5. Dibujar la interfaz
+        function renderizarProductos() {
+            const grid = document.getElementById('gridProductos');
+            grid.innerHTML = '';
+
+            inventario.forEach((prod, index) => {
+                // Revisar si el stock está bajo
+                const esAlerta = prod.stock <= LIMITE_STOCK_BAJO;
+                
+                const card = document.createElement('div');
+                card.className = `producto-card ${esAlerta ? 'alerta' : ''}`;
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="producto-nombre">${prod.nombre}</div>
+                        <div class="producto-ref">${prod.ref}</div>
+                    </div>
+                    
+                    <div class="alerta-texto">⚠️ ¡Pedir más!</div>
+                    
+                    <div class="stock-container">
+                        <button class="btn-control" onclick="cambiarStock(${index}, -1)">-</button>
+                        <div class="stock-numero">${prod.stock}</div>
+                        <button class="btn-control" onclick="cambiarStock(${index}, 1)">+</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // 6. Función para sumar o restar
+        function cambiarStock(index, cantidad) {
+            inventario[index].stock += cantidad;
+            
+            // Evitar números negativos
+            if (inventario[index].stock < 0) inventario[index].stock = 0;
+
+            guardarEnMemoria();
+            renderizarProductos();
+        }
+
+        // 7. Guardar en la memoria del navegador (LocalStorage)
+        function guardarEnMemoria() {
+            localStorage.setItem('inventarioNabin', JSON.stringify(inventario));
+        }
+
+        // 8. Iniciar al cargar la página
+        document.addEventListener("DOMContentLoaded", () => {
+            renderizarProductos();
+        });
+    </script>
+</body>
+</html>
